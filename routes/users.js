@@ -12,6 +12,7 @@ router.post("/register", async (req, res, next) => {
   }
   res.send({message: req.body})
   console.log(req.body)
+  console.log(JSON.stringify(req.body))
   next();
 });
 

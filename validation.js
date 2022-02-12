@@ -6,10 +6,10 @@ const registerValidation = (data) => {
     id: Joi.string().required(),
     name: Joi.string().max(50).required(),
     dob: Joi.date().required(),
-    height: Joi.number().required(),
     email: Joi.string().required(),
     phone: Joi.string(),
-    coordinates: Joi.object()
+    coordinates: Joi.object(),
+    gender: Joi.string()
   })
 
   return schema.validate(data);

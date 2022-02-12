@@ -1,8 +1,13 @@
 const express = require('express')
 const {registerValidation} = require('../validation')
 const router = express.Router();
-const {verifyAccess} = require("../middleware/auth")
+const {verifyAccess} = require("../middleware/firebase-auth")
 const pool = require("../db/connection")
+
+/**
+ * ---common parameters---
+ *  -req.authId- comes from firebase middleware authentication check 
+ */
 
 /**  
  * Create a new user. Utilizing Firebase Auth
@@ -41,21 +46,21 @@ router.post("/register", async (req, res) => {
  * Get current logged in user information
  */
 router.get("/me", verifyAccess, async (req, res) => {
-  /*req.authId comes from middleware authentication check*/
-  const query = `SELECT u.name, u.gender, date_part('year', AGE(NOW(), u.date_of_birth)) AS age, 
-                  ST_AsGeoJSON(u.the_geom)::json AS coordinates, u.details,
+  const statement = `SELECT u.name, date_part('year', AGE(NOW(), u.date_of_birth)) AS age, 
+                  ST_AsGeoJSON(u.the_geom)::json AS coordinates, u.details, g.name AS gender,
                   json_build_object(
                     'gender', p.gender, 'minimum_age', p.minimum_age,
                     'maximum_age', p.maximum_age, 'maximum_distance', maximum_distance
                   ) AS preferences  
                   FROM users u 
-                  JOIN preferences p ON p.user_id = u.id
+                  JOIN preferences p ON p.user_id=u.id
+                  JOIN gender g ON g.id=u.gender
                   WHERE u.id = $1`
   const values = [req.authId]
   try{
-    const queryResponse = await pool.query(query, values)
-    console.log(queryResponse)
-    res.send({message: "Success", user: queryResponse.rows[0]})
+    const user = await pool.query(statement, values)
+    console.log(user)
+    res.send({user: user.rows[0]})
   }catch(error){
     console.log(error)
     res.status(400).send({error: "User information retrieval failed"})
@@ -66,12 +71,11 @@ router.get("/me", verifyAccess, async (req, res) => {
  * Delete account of current logged in user
  */
 router.delete("/me/delete", verifyAccess, async (req, res) => {
-    /*req.authId comes from middleware authentication check*/
-  const query = `DELETE FROM users WHERE id = $1`
+  const statement = `DELETE FROM users WHERE id = $1`
   const values = [req.authId]
   try{
-    const queryResponse = await pool.query(query, values)
-    console.log(queryResponse)
+    const statementRes = await pool.query(statement, values)
+    console.log(statementRes)
     res.send({message: `User ${req.authId} deleted successfully`})
   }catch(error){
     res.status(400).send({error: "User deletion failed"})
@@ -83,7 +87,21 @@ router.delete("/me/delete", verifyAccess, async (req, res) => {
  * Only fields eligible for updates are preferences
  */
 router.put("/me/preferences", verifyAccess, async (req, res) => {
+  console.log(req.body)
+  const {gender, minimum_age, maximum_age, maximum_distance} = req.body
+  const statement = `UPDATE preferences
+                      SET gender=$1, minimum_age=$2, maximum_age=$3, maximum_distance=$4
+                      WHERE user_id=$5`
+  const values = [gender, minimum_age, maximum_age, maximum_distance, req.authId.toString()]
 
+  try{
+    const statementRes = await pool.query(statement, values)
+    console.log(statementRes)
+    res.send({message: "Preferences updated"})
+  }catch(error){
+    console.log(error);
+    res.status(400).send({error: "Preferences update failed"})
+  }
 });
 
 module.exports = router

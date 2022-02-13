@@ -1,5 +1,5 @@
 CREATE TABLE users (
-	id varchar(255) PRIMARY KEY, 
+	id TEXT PRIMARY KEY, 
 	name varchar(50) NOT null,
 	date_of_birth date NOT null,
 	gender varchar(5) NOT null,
@@ -16,7 +16,7 @@ CREATE TABLE preferences (
 	minimum_age int NOT NULL DEFAULT 18,
 	maximum_age int NOT NULL DEFAULT 99,
 	maximum_distance int NOT NULL DEFAULT 25,
-	user_id varchar(255) NOT NULL,
+	user_id TEXT NOT NULL,
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE 
 );
 
@@ -53,3 +53,8 @@ AND NOT id='v45rs'
 UPDATE users 
 SET coordinates = 'POINT(-34.895637 28.510540)' --(longitude, lat)
 WHERE id = 're5tf' 
+
+SELECT * 
+FROM preferences p
+RIGHT JOIN users u ON u.gender = p.gender 
+WHERE p.user_id = 'jX36hxgcr4VC20Htf6FYLao0FM03' AND u.id != 'jX36hxgcr4VC20Htf6FYLao0FM03'

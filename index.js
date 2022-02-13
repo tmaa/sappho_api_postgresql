@@ -14,10 +14,12 @@ app.use(cors());
 //import routes
 const usersRoutes = require("./routes/users")
 const searchRoutes = require("./routes/search")
+const actionsRoutes = require("./routes/actions")
 
 //routes
 app.use("/api/users", usersRoutes)
-
 app.use("/api/search", searchRoutes)
+app.use("/api/actions", actionsRoutes)
+
 
 app.listen(PORT, () => console.log(`Server running on ${PORT}`))

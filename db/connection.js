@@ -1,6 +1,6 @@
  const Pool = require('pg').Pool
 
-//db connection
+// //local db connection
 const pool = new Pool({
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
@@ -8,6 +8,7 @@ const pool = new Pool({
   port: 5432,
   database: process.env.PGDATABASE
 });
+
 
 // var dbConnection = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@localhost/sapphodb`
 

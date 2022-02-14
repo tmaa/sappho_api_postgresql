@@ -24,7 +24,7 @@ router.post("/like-dislike", verifyAccess, async (req, res) => {
         INSERT INTO interaction (account_id, target_account_id, liked)
         VALUES ($1, $2, $3) RETURNING *`
   const insertIntointeractionValues = [account_id, target_account_id, liked]
-  const insertIntoMatches = ``
+  const insertIntoMatch = ``
   try{
     if(liked){
       const mutualLikeRes = await pool.query(checkMutualLike, checkMutualLikeValues)

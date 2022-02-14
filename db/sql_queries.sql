@@ -90,3 +90,55 @@ WHERE p.account_id = 'jX36hxgcr4VC20Htf6FYLao0FM03' AND u.id != 'jX36hxgcr4VC20H
 	-- 	AND date_part('year', AGE(NOW(), u.date_of_birth)) BETWEEN $2 AND $3
 	-- 	AND ST_DWithin(the_geom, 'SRID=4326;POINT(${location.coordinates[0]} ${location.coordinates[1]})', $4 * 1609.34, true)
 	-- 	LIMIT 50`
+
+
+	select table_schema, table_name from information_schema.tables
+
+--CREATE TABLE preference (
+--	id serial PRIMARY KEY, 
+--	interested_in varchar(10) NOT NULL,
+--	minimum_age int NOT NULL DEFAULT 18,
+--	maximum_age int NOT NULL DEFAULT 99,
+--	maximum_distance int NOT NULL DEFAULT 25,
+--	account_id TEXT NOT NULL UNIQUE,
+--	FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE ON UPDATE CASCADE 
+--);
+
+--CREATE TABLE interaction (
+--	id serial PRIMARY KEY ,
+--	account_id TEXT NOT NULL,
+--	target_account_id TEXT NOT NULL,
+--	liked boolean NOT NULL,
+--	FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE ON UPDATE CASCADE,
+--	FOREIGN KEY (target_account_id) REFERENCES account(id) ON DELETE CASCADE ON UPDATE CASCADE
+--)
+
+--	AND date_part('year', AGE(NOW(), u.date_of_birth)) BETWEEN 18 AND 99
+--	AND ST_DWithin(the_geom, 'SRID=4326;POINT(-77.106762 38.881699)', 25 * 1609.34, true)
+
+--DELETE FROM account WHERE name = 'z'
+
+--DO
+--$$
+--BEGIN
+--	FOR i IN 1..2000 loop 
+--		WITH insert1 AS (
+--		INSERT INTO account(id, name, date_of_birth, gender, email, phone, the_geom, details)
+--		SELECT md5(random()::TEXT), 'z', random_date_in_range ('1922-01-01', '2004-01-01'),
+--		CASE 
+--			WHEN floor(random() * 5 + 1) = 1 THEN 'm' 
+--			WHEN floor(random() * 5 + 1) = 2 THEN 'w'
+--			WHEN floor(random() * 5 + 1) = 3 THEN 'tm'
+--			WHEN floor(random() * 5 + 1) = 4 THEN 'tw'
+--			ELSE 'w'
+--		END, md5(random()::TEXT), floor(random() * (9999999999-1111111111 + 1) + 11111111111),
+--		st_makepoint(-(random()* (77-76 + 1) + 76), (random()* (39-38 + 1) + 38)), md5(random()::text) 
+--		RETURNING id
+--		)
+--		INSERT INTO preferences (interested_in, account_id)
+--		SELECT 'w', id
+--		FROM insert1;	
+--	END LOOP;
+--END;
+--$$
+--;

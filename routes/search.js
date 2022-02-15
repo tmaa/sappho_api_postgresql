@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const {verifyAccess} = require("../middleware/firebase-auth");
+const {verifyAccess} = require("../firebase/firebase-auth");
 const pool = require("../db/connection")
 
 /**

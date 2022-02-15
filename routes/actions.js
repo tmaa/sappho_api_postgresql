@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const {verifyAccess} = require("../middleware/firebase-auth");
+const {verifyAccess} = require("../firebase/firebase-auth");
 const pool = require("../db/connection")
 
 /**
@@ -39,6 +39,19 @@ router.post("/like-dislike", verifyAccess, async (req, res) => {
     console.log(error)
     res.status(400).send({error: "Liked/Dislike insert failed"})
   }
-})
+});
+
+// const express = require("express");
+
+// const Router = express.Router();
+
+// // Very simple example
+// Router.post("/new-message", (req, res) => {
+//   // You can do validation or database stuff before emiting
+//   req.io.emit("new-message", { content: req.body.content });
+//   return res.send({ success: true });
+// });
+
+// module.exports = Router;
 
 module.exports = router

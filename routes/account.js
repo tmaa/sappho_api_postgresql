@@ -1,7 +1,7 @@
 const express = require('express')
 const {registerValidation} = require('../validation')
 const router = express.Router();
-const {verifyAccess} = require("../middleware/firebase-auth")
+const {verifyAccess} = require("../firebase/firebase-auth")
 const pool = require("../db/connection")
 
 /**
@@ -13,6 +13,7 @@ const pool = require("../db/connection")
  * Create a new account. Utilizing Firebase Auth
  */
 router.post("/register", async (req, res) => {
+  // //verifyAccess add later?
   // const {error} = registerValidation(req.body)
   // if(error){
   //   console.log(error.details[0].message)
@@ -49,7 +50,7 @@ router.post("/register", async (req, res) => {
  */
 router.get("/me", verifyAccess, async (req, res) => {
   const statement = `
-          SELECT u.name, date_part('year', AGE(NOW(), u.date_of_birth)) AS age, 
+          SELECT u.id, u.name, date_part('year', AGE(NOW(), u.date_of_birth)) AS age, 
           ST_AsGeoJSON(u.the_geom)::json AS location, u.details, g.name AS gender,
           json_build_object(
             'interested_in', p.interested_in, 'minimum_age', p.minimum_age,

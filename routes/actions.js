@@ -24,12 +24,17 @@ router.post("/like-dislike", verifyAccess, async (req, res) => {
         INSERT INTO interaction (account_id, target_account_id, liked)
         VALUES ($1, $2, $3) RETURNING *`
   const insertIntointeractionValues = [account_id, target_account_id, liked]
-  const insertIntoMatch = ``
+  const insertMatch = `
+        INSERT INTO relationship (account_id_1, account_id_2)
+        VALUES ($1, $2)`
+  const insertMatchValues = [account_id, target_account_id]
   try{
     if(liked){
       const mutualLikeRes = await pool.query(checkMutualLike, checkMutualLikeValues)
       if(mutualLikeRes.rowCount === 1){
         console.log("mutual like established")
+        const insertMatchRes = await pool.query(insertMatch, insertMatchValues)
+        //console.log(insertMatchRes)
       }
     }
     const statementRes = await pool.query(insertIntointeraction, insertIntointeractionValues)
@@ -37,7 +42,7 @@ router.post("/like-dislike", verifyAccess, async (req, res) => {
     res.send({message: "statementRes"})
   }catch(error){
     console.log(error)
-    res.status(400).send({error: "Liked/Dislike insert failed"})
+    res.status(400).send({error: "insert failed"})
   }
 });
 

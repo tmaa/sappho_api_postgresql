@@ -10,6 +10,15 @@ CREATE TABLE account (
 	the_geom geometry NOT null
 );
 
+CREATE TABLE match( 
+	id serial PRIMARY KEY,
+	account_id_1 TEXT NOT NULL,
+	account_id_2 TEXT NOT NULL,
+	created_at timestamp NOT NULL DEFAULT NOW(),
+	FOREIGN KEY (account_id_1) REFERENCES account(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (account_id_2) REFERENCES account(id) ON DELETE CASCADE ON UPDATE CASCADE
+)
+
 CREATE TABLE preference (
 	id serial PRIMARY KEY, 
 	interested_in varchar(10) NOT NULL,

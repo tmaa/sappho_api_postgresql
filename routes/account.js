@@ -3,6 +3,7 @@ const {registerValidation} = require('../validation')
 const router = express.Router();
 const {verifyAccess} = require("../firebase/firebase-auth")
 const pool = require("../db/connection")
+const Message = require('../mongo_models/Message')
 
 /**
  * ---common parameters---
@@ -109,6 +110,33 @@ router.put("/me/preference", verifyAccess, async (req, res) => {
   }catch(error){
     console.log(error);
     res.status(400).send({error: "preference update failed"})
+  }
+});
+
+router.get("/me/messages", verifyAccess, async (req, res) => {
+  try{
+    let allMessages = await Message.find({"to": req.authId}).sort({createdAt: 'asc'})
+    console.log(allMessages)
+    res.send({messages: allMessages})
+  }catch(error){
+    console.log(error)
+    res.status(400).send({message: error})
+  }
+});
+
+router.get("/me/matches", verifyAccess, async (req, res) => {
+  const getMatches = `
+        SELECT * FROM(
+          (SELECT account_id_1 AS account_id FROM relationship WHERE account_id_2 = $1)
+          UNION 
+          (SELECT account_id_2 AS account_id FROM relationship WHERE account_id_1 = $1)
+        ) AS matches`
+  const getMatchesValues = [req.authId]
+  try{
+    const matchesRes = await pool.query(getMatches, getMatchesValues)
+    res.send({matches: matchesRes.rows})
+  }catch(error){
+    res.status(400).send({error: "Bad request"})
   }
 });
 

@@ -15,15 +15,15 @@ router.post("/like-dislike", verifyAccess, async (req, res) => {
   console.log(req.body)
   const {account_id, target_account_id, liked} = req.body
   const checkMutualLike = `
-          SELECT 1 FROM interaction
+          SELECT 1 FROM like_dislike
           WHERE account_id = $1
           AND target_account_id = $2
           AND liked = true`
   const checkMutualLikeValues = [target_account_id, account_id]
-  const insertIntointeraction = `
-        INSERT INTO interaction (account_id, target_account_id, liked)
+  const insertIntolike_dislike = `
+        INSERT INTO like_dislike (account_id, target_account_id, liked)
         VALUES ($1, $2, $3) RETURNING *`
-  const insertIntointeractionValues = [account_id, target_account_id, liked]
+  const insertIntolike_dislikeValues = [account_id, target_account_id, liked]
   const insertMatch = `
         INSERT INTO relationship (account_id_1, account_id_2)
         VALUES ($1, $2)`
@@ -37,7 +37,7 @@ router.post("/like-dislike", verifyAccess, async (req, res) => {
         //console.log(insertMatchRes)
       }
     }
-    const statementRes = await pool.query(insertIntointeraction, insertIntointeractionValues)
+    const statementRes = await pool.query(insertIntolike_dislike, insertIntolike_dislikeValues)
     //console.log(statementRes)
     res.send({message: "statementRes"})
   }catch(error){

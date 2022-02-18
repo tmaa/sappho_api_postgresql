@@ -41,7 +41,7 @@ VALUES ('m', 'Man'),
 		('tw', 'Trans Woman'),
 		('nb', 'Non-binary');
 
-CREATE TABLE interaction (
+CREATE TABLE like_dislike (
 	id serial PRIMARY KEY ,
 	account_id TEXT NOT NULL,
 	target_account_id TEXT NOT NULL,
@@ -113,7 +113,7 @@ WHERE p.account_id = 'jX36hxgcr4VC20Htf6FYLao0FM03' AND u.id != 'jX36hxgcr4VC20H
 --	FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE ON UPDATE CASCADE 
 --);
 
---CREATE TABLE interaction (
+--CREATE TABLE like_dislike (
 --	id serial PRIMARY KEY ,
 --	account_id TEXT NOT NULL,
 --	target_account_id TEXT NOT NULL,

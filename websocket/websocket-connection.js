@@ -16,7 +16,7 @@ const websocketConnection = (wss) => {
     clients[urlParams.id] = ws
     ws.isAlive = true
 
-    ws.on('pong', heartbeat);
+    ws.on('pong', () => {this.isAlive = true});
 
     ws.on("message", async (data) => {
       const messageData = JSON.parse(data)

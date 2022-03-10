@@ -50,7 +50,7 @@ CREATE TABLE like_dislike (
 	FOREIGN KEY (target_account_id) REFERENCES account(id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 
-CREATE TABLE photos (
+CREATE TABLE photo (
 	id int PRIMARY KEY,
   link TEXT,
 	caption varchar(25), --can display caption about photo

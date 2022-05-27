@@ -22,18 +22,19 @@ router.post("/register", async (req, res) => {
   //   return res.status(400).send({message: error.details[0].message})
   // }
   //console.log(req.body)
-  //const {id, name, dob, gender, coordinates, interested_in, email, phone} = req.body
-  const {id, name, dob, gender, interested_in, email, phone, images} = req.body
-  const insertPhotos = `
-          INSERT INTO photo (account_id, url_array)
-          VALUES ($1, $2)
-          RETURNING *`
-  const photosValues = [id, images]
+  const {id, name, dob, gender, coordinates, interested_in, email, phone} = req.body
+  // const {id, name, dob, gender, interested_in, email, phone, images} = req.body
+  // const insertPhotos = `
+  //         INSERT INTO photo (account_id, url_array)
+  //         VALUES ($1, $2)
+  //         RETURNING *`
+  // const photosValues = [id, images]
   const insertaccount = `
-          INSERT INTO account (id, name, date_of_birth, gender, email, phone)
-          VALUES ($1, $2, $3, $4, $5, $6)
+          INSERT INTO account (id, name, date_of_birth, gender, the_geom, email, phone)
+          VALUES ($1, $2, $3, $4, st_makepoint($5, $6), $7, $8)
           RETURNING *`
-  const accountValues = [id, name, dob, gender, email, phone]
+  const accountValues = [id, name, dob, gender, coordinates.longitude, 
+                          coordinates.latitude, email, phone]
   const insertPref = `
           INSERT INTO preference (account_id, interested_in)
           VALUES ($1, $2)
@@ -43,9 +44,9 @@ router.post("/register", async (req, res) => {
   try{
     const accountInsertRes = await pool.query(insertaccount, accountValues)
     const prefInsertRes = await pool.query(insertPref, prefValues)
-    const photoInsert = await pool.query(insertPhotos, photosValues)
+    // const photoInsert = await pool.query(insertPhotos, photosValues)
 
-    console.log(photoInsert)
+    // console.log(photoInsert)
     res.send({message: `account ${accountInsertRes.rows[0].id} inserted successfully`, 
               account: accountInsertRes.rows[0], preference: prefInsertRes.rows[0]})
   }catch(error){
